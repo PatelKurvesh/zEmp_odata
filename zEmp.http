@@ -11,13 +11,14 @@ Content-Type: application/json
     "STATUS":false
 }
 
+
 ###
-POST http://localhost:4004/odata/loginEmployee
+POST http://localhost:4004/v2/odata/loginEmployee
 Content-Type: application/json
 
 {
-    "EMP_NAME":"Diksha",
-    "PASSWORD":"d12345"
+    "EMP_NAME":"Kurvesh",
+    "PASSWORD":"k12345"
 }
 
 ###
@@ -29,6 +30,6 @@ POST http://localhost:4004/odata/loginAdmin
 Content-Type: application/json
 
 {
-    "ADMIN_NAME":"Diksha",
-    "PASSWORD":"d12345"
+    "ADMIN_NAME":"Kurvesh",
+    "PASSWORD":"k12345"
 }
