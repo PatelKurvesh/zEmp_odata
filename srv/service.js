@@ -31,15 +31,21 @@ module.exports = (srv => {
 
     srv.on("loginEmployee", async (req) => {
         let {EMP_NAME, PASSWORD} = req.data;
+        var sErrMsg = "";
         const aEmployee = await SELECT.from(EMPLOYEE).columns('EMP_ID', 'EMP_NAME', 'STATUS').where({EMP_NAME, PASSWORD});
-        if(aEmployee.length === 0){
-            req.error(401,"Requested User is not authorized");
+        if (aEmployee.length === 0) {
+            sErrMsg = `User ${EMP_NAME} is not authorized`;
+            req.error(404, sErrMsg);
             return
-        }else{
+        } else if (aEmployee[0].STATUS === false) {
+            sErrMsg = `User ${EMP_NAME} is not active`;
+            req.error(404, sErrMsg);
+            return;
+        } else {
             var oEmployee = {
-                "status":201,
-                "message":"Login successfully",
-                "results":aEmployee
+                "status": 201,
+                "message": "Login successfully",
+                "results": aEmployee
             };
             let {res} = req.http;
             res.send(oEmployee);
@@ -50,35 +56,19 @@ module.exports = (srv => {
     srv.on("loginAdmin", async (req) => {
         let {ADMIN_NAME, PASSWORD} = req.data;
         const aAdmin = await SELECT.from(ADMIN).columns('ADMIN_ID', 'ADMIN_NAME').where({ADMIN_NAME, PASSWORD});
-        if(aAdmin.length === 0){
-            req.error(401,"Requested User is not authorized");
+        if (aAdmin.length === 0) {
+            req.error(401, "Requested User is not authorized");
             return
-        }else{
+        } else {
             var oEmployee = {
-                "status":201,
-                "message":"Login successfully",
-                "results":aAdmin
+                "status": 201,
+                "message": "Login successfully",
+                "results": aAdmin
             };
             let {res} = req.http;
             res.send(oEmployee);
         }
     });
-    // srv.on("READ", EMPLOYEE, async (req, next) => {
-    //     let db = await cds.connect.to('db');
-    //     let tx = db.tx(req);
-    //     try {
-    //         let sUser = "Kurvesh";
-    //         let employee = await tx.run(SELECT.from(EMPLOYEE).where(`EMP_NAME=${sUser}`));
-    //         console.log(employee);
-    //         // return await SELECT.from(EMPLOYEE).where(`EMP_NAME=${sUser}`);
-    //         // let sQuery = `SELECT MAX(USER_ID) AS COUNT FROM ${USER}`;
-    //         // let userTable = await tx.run(sQuery);
-    //         // userTable[0].COUNT = userTable[0].COUNT + 1;
-    //         // req.data.USER_ID = userTable[0].COUNT;
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // });
 
 
 });

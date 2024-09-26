@@ -6,9 +6,9 @@ Content-Type: application/json
 
 {
     "EMP_ID":2,
-    "EMP_NAME":"Tanya",
-    "PASSWORD":"t12345",
-    "STATUS":true
+    "EMP_NAME":"Diksha",
+    "PASSWORD":"d12345",
+    "STATUS":false
 }
 
 ###
@@ -16,8 +16,8 @@ POST http://localhost:4004/odata/loginEmployee
 Content-Type: application/json
 
 {
-    "EMP_NAME":"Kurvesh",
-    "PASSWORD":"k12345"
+    "EMP_NAME":"Diksha",
+    "PASSWORD":"d12345"
 }
 
 ###
@@ -29,6 +29,6 @@ POST http://localhost:4004/odata/loginAdmin
 Content-Type: application/json
 
 {
-    "ADMIN_NAME":"Uddhav",
-    "PASSWORD":"u12345"
+    "ADMIN_NAME":"Diksha",
+    "PASSWORD":"d12345"
 }
