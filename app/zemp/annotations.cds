@@ -1,0 +1,1 @@
+using zEmp.srv.service.MyService as service from '../../srv/service';

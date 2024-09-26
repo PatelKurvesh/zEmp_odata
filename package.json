@@ -1,0 +1,39 @@
+{
+    "name": "zEmp",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@cap-js/hana": "1.1.0",
+        "@sap/cds": "^7",
+        "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
+        "@sap/xssec": "^4",
+        "cors": "^2.8.5",
+        "express": "^4"
+    },
+    "devDependencies": {
+        "@cap-js/cds-types": "^0.2.0",
+        "@cap-js/sqlite": "^1",
+        "@sap/cds-dk": "^7",
+        "@sap/ux-specification": "UI5-1.128",
+        "rimraf": "^5.0.5"
+    },
+    "scripts": {
+        "start": "cds-serve",
+        "deploy": "cf deploy mta_archives/zEmp_1.0.0.mtar",
+        "watch-zemp": "cds watch --open zemp/webapp/index.html?sap-ui-xx-viewCache=false",
+        "undeploy": "cf undeploy zEmp --delete-services --delete-service-keys --delete-service-brokers",
+        "build": "rimraf resources mta_archives && mbt build --mtar archive"
+    },
+    "cds": {
+        "requires": {
+           "auth":"dummy",
+            "db": "hana"
+        },
+        "sql": {
+            "native_hana_associations": false
+        }
+    }
+}

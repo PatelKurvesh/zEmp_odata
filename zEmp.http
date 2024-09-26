@@ -1,0 +1,34 @@
+GET http://localhost:4004/v2/odata/EMPLOYEE
+
+###
+POST http://localhost:4004/v2/odata/EMPLOYEE
+Content-Type: application/json
+
+{
+    "EMP_ID":2,
+    "EMP_NAME":"Tanya",
+    "PASSWORD":"t12345",
+    "STATUS":true
+}
+
+###
+POST http://localhost:4004/odata/loginEmployee
+Content-Type: application/json
+
+{
+    "EMP_NAME":"Kurvesh",
+    "PASSWORD":"k12345"
+}
+
+###
+GET http://localhost:4004/v2/odata/ADMIN
+
+###
+
+POST http://localhost:4004/odata/loginAdmin
+Content-Type: application/json
+
+{
+    "ADMIN_NAME":"Uddhav",
+    "PASSWORD":"u12345"
+}

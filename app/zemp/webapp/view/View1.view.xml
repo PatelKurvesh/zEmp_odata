@@ -1,0 +1,41 @@
+<mvc:View controllerName="zemp.controller.View1" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <Table id="projectTable" class="sapUiResponsiveContentPadding" items="{/EMPLOYEE}" growing="true" selectionChange="onSelectionChange" updateFinished="onUpdateFinished" mode="SingleSelectMaster">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <!-- <Title text="Employee ( {JSONModel>/iCount} )" /> -->
+                        <Title text="Employee "/>
+                        <ToolbarSpacer/>
+                        <!-- <Button
+                                                    text="Delete"
+                                                    icon="sap-icon://delete"
+                                                    type="Emphasized"
+                                                    press="onDelete"
+                                                /> -->
+                        <Button text="Create" icon="sap-icon://add" type="Emphasized" press="onCreateClick"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column>
+                        <Text text="Employee ID"/>
+                    </Column>
+                   
+                    <Column>
+                        <Text text="Employee Name"/>
+                    </Column>
+
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{EMP_ID}"/>
+                            <Text text="{EMP_NAME}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+
+        </content>
+    </Page>
+</mvc:View>
