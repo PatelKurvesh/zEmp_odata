@@ -1,9 +1,9 @@
 const cds = require("@sap/cds");
-const {validateEmployee} = require('../srv/utils/external');
-const {validateAdmin} = require('../srv/utils/external');
+const {getTileData, validateEmployee, validateAdmin} = require('../srv/utils/external');
+// const {validateAdmin} = require('../srv/utils/external');
 
 module.exports = (srv => {
-    let {EMPLOYEE, ADMIN} = srv.entities;
+    let {EMPLOYEE, ADMIN, TILE} = srv.entities;
 
     srv.before("CREATE", EMPLOYEE, async (req) => {
         let db = await cds.connect.to('db');
@@ -34,14 +34,14 @@ module.exports = (srv => {
     srv.on("loginEmployee", async (req) => {
         let {EMP_NAME, PASSWORD} = req.data;
         let target = EMPLOYEE;
-        console.log(target.name);
+        let tileData = await getTileData(srv, target, req);
         const validateUser = await validateEmployee(req, target);
-        const aEmployee = await SELECT.from(EMPLOYEE).columns('EMP_ID', 'EMP_NAME', 'STATUS').where({EMP_NAME, PASSWORD});
+        const aEmployee = await SELECT.from(EMPLOYEE).columns('EMP_ID', 'EMP_NAME','EMP_STATUS').where({EMP_NAME, PASSWORD});
         if (aEmployee.length === 0) {
             var errCode = 404,
                 errMsg = 'Requested user not found';
             if (validateUser.IsUserValid === false) {
-                errMsg = 'Requested UserName is incorrect, please provide correct user';
+                errMsg = 'Requested user is incorrect, please provide correct user';
                 errCode = 400;
             }
             if (validateUser.IsPasswordValid === false) {
@@ -54,11 +54,12 @@ module.exports = (srv => {
             }
             req.error(errCode, errMsg);
             return;
-        } else if (aEmployee[0].STATUS === false) {
+        } else if (aEmployee[0].EMP_STATUS === false) {
             errMsg = `Requested user is not active`;
             req.error(403, errMsg);
             return;
         } else {
+            aEmployee[0].TILE = tileData;
             var oEmployee = {
                 "status": 200,
                 "message": "Login successfully!!",
@@ -76,9 +77,9 @@ module.exports = (srv => {
         const aAdmin = await SELECT.from(ADMIN).columns('ADMIN_ID', 'ADMIN_NAME', 'PASSWORD').where({ADMIN_NAME, PASSWORD});
         if (aAdmin.length === 0) {
             var errCode = 404,
-                errMsg = 'Requested Admin not found';
+                errMsg = 'Requested admin not found';
             if (validatedAdmin.IsAdminValid === false) {
-                errMsg = 'Requested AdminName is incorrect, please provide correct user';
+                errMsg = 'Requested admin name is incorrect, please provide correct admin';
                 errCode = 400;
             }
             if (validatedAdmin.IsPasswordValid === false) {
@@ -86,7 +87,7 @@ module.exports = (srv => {
                 errCode = 400;
             }
             if (validatedAdmin.IsAdminValid === false && validatedAdmin.IsPasswordValid === false) {
-                errMsg = 'Requested Admin not found';
+                errMsg = 'Requested admin not found';
                 errCode = 404;
             }
             req.error(errCode, errMsg);
@@ -101,22 +102,5 @@ module.exports = (srv => {
             res.send(oAdmin);
         }
     });
-
-    // srv.on("loginAdmin", async (req) => {
-    //     let {ADMIN_NAME, PASSWORD} = req.data;
-    //     const aAdmin = await SELECT.from(ADMIN).columns('ADMIN_ID', 'ADMIN_NAME','PASSWORD').where({ADMIN_NAME, PASSWORD});
-    //     if (aAdmin.length === 0) {
-    //         req.error(404, 'Requested user not found');
-    //         return;
-    //     } else {
-    //         var oAdmin = {
-    //             "status": 200,
-    //             "message": "Login successfully",
-    //             "results": aAdmin
-    //         };
-    //         let {res} = req.http;
-    //         res.send(oAdmin);
-    //     }
-    // });
 
 });

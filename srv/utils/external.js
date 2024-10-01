@@ -1,13 +1,48 @@
 const cds = require("@sap/cds");
 
-// const getData = async (target, colName, value) => {
-//     let db = await cds.connect.to('db');
-//     let tx = db.tx();
-//     try {
-//         return await tx.run(SELECT.from(target).columns(colName,'PASSWORD').where(`${colName}='${value}'`));
-//     } catch (error) {
-//         console.log(error);
+const getTileData = async (srv, target, req) => {
+    let aTile = [];
+    let {EMP_NAME, PASSWORD} = req.data;
+    const aTiles = await SELECT.from(target).where({EMP_NAME, PASSWORD});
+    if (aTiles.length === 0) {
+        return aTile;
+    } else {
+
+        var aVisibleTile = aTiles[0].TILE_VISIBLITY;
+        for (var t in aVisibleTile) {
+            let tileId = aVisibleTile[t];
+            let tile = await SELECT.from(srv.entities.TILE).where(`TILE_ID=${tileId}`);
+            let oTileObj = tile[tile.length - 1];
+            aTile.push(oTileObj);
+        }
+        return aTile;
+    }
+}
+
+// const getTileData = async (srv, target, req) => {
+//     let aTile = [];
+//     let {EMP_NAME, PASSWORD} = req.data;
+//     var totalTiles = await SELECT.from(srv.entities.TILE);
+//     console.log(totalTiles);
+//     const aTiles = await SELECT.from(target).where({EMP_NAME, PASSWORD});
+//     var aVisibleTile = aTiles[0].TILE_VISIBLITY;
+//     for (var t in aVisibleTile) {
+//         for (let i in totalTiles) {
+//             let tileId = aVisibleTile[t];
+//             let tile = await SELECT.from(srv.entities.TILE).where(`TILE_ID=${tileId}`);
+//             if (JSON.stringify(totalTiles[i]) === JSON.stringify(tile[i])) {
+//                 totalTiles[i].IS_VISIBLE = true;
+//             } else {
+//                 totalTiles[i].IS_VISIBLE = false;
+//             } t++;
+//         }
+//         // console.log(totalTiles);
+//         // let oTileObj = tile[tile.length - 1];
+//         // aTile.push(oTileObj);
 //     }
+//     return totalTiles;
+
+
 // }
 
 const getEmployeeData = async (target, value) => {
@@ -60,38 +95,13 @@ const validateAdmin = async (req, target) => {
         bCorrectUser = aUserDetails[0].ADMIN_NAME === req.data.ADMIN_NAME ? true : false;
         bCorrectPassword = aUserDetails[0].PASSWORD === PASSWORD ? true : false;
     }
-    var oValidatedEmployee = {
-        "IsUserValid": bCorrectUser,
+    var oValidatedAdmin = {
+        "IsAdminValid": bCorrectUser,
         "IsPasswordValid": bCorrectPassword
     };
-    return oValidatedEmployee
+    return oValidatedAdmin
 }
 
-// const validate = async (req, target) => {
-//     let sTargetName = target.name;
-//     if (sTargetName.includes('EMPLOYEE')) {
-//         let {EMP_NAME, PASSWORD} = req.data;
-//         let aUserName = await getData(target, 'EMP_NAME', EMP_NAME);
-//         let aPassword = await getData(target, 'PASSWORD', PASSWORD);
-//         let bCorrectUser = aUserName.length === 0 ? false : true;
-//         let bCorrectPassword = aPassword.length === 0 ? false : true;
-//         var oValidatedEmployee = {
-//             "IsUserValid": bCorrectUser,
-//             "IsPasswordValid": bCorrectPassword
-//         };
-
-//     } else {
-//         let {ADMIN_NAME, PASSWORD} = req.data;
-//         let aAdminName = await getData(target, 'ADMIN_NAME', ADMIN_NAME);
-//         let aPassword = await getData(target, 'PASSWORD', PASSWORD);
-//         let bCorrectAdmin = aAdminName.length === 0 ? false : true;
-//         let bCorrectPassword = aPassword.length === 0 ? false : true;
-//         var oValidatedAdmin = {
-//             "IsAdminValid": bCorrectAdmin,
-//             "IsPasswordValid": bCorrectPassword
-//         };
-//     }
-//     return sTargetName.includes('EMPLOYEE') ? oValidatedEmployee : oValidatedAdmin
-// }
+exports.getTileData = getTileData;
 exports.validateEmployee = validateEmployee;
 exports.validateAdmin = validateAdmin;
